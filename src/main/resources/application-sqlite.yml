@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:data/core-billing.db
+    driver-class-name: org.sqlite.JDBC
+
+# SQLite JDBC directly works with JdbcTemplate
+# Flyway auto-detects SQLite from the JDBC URL
