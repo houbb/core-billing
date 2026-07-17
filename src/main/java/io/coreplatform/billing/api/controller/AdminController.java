@@ -57,7 +57,7 @@ public class AdminController {
             @RequestParam(defaultValue = "20") int size) {
 
         List<Account> accounts = accountService.listAccounts(page, size, SecurityContext.getTenantId());
-        int total = accountService.countAccounts();
+        int total = accountService.countAccounts(SecurityContext.getTenantId());
 
         List<Map<String, Object>> items = accounts.stream()
                 .map(a -> {
@@ -72,6 +72,25 @@ public class AdminController {
                 .toList();
 
         return ResponseEntity.ok(new PagedResponse<>(items, page, size, total));
+    }
+
+    @GetMapping("/transactions")
+    @RequireRole({"ADMIN", "SUPER_ADMIN"})
+    public ResponseEntity<PagedResponse<Map<String, Object>>> listTransactions(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        boolean superAdmin = SecurityContext.isSuperAdmin();
+        List<Transaction> transactions = superAdmin
+                ? transactionService.listAllTransactions(page, size)
+                : transactionService.listTenantTransactions(
+                        SecurityContext.getTenantId(), page, size);
+        List<Map<String, Object>> items = transactions.stream()
+                .map(TransactionController::toTransactionMap)
+                .toList();
+        return ResponseEntity.ok(new PagedResponse<>(
+                items, page, size, superAdmin
+                ? transactionService.countAllTransactions()
+                : transactionService.countTenantTransactions(SecurityContext.getTenantId())));
     }
 
     /**

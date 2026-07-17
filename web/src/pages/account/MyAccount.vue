@@ -136,12 +136,16 @@ function formatTime(t: string) {
   return t.replace('T', ' ').substring(0, 19)
 }
 function typeLabel(t: string) {
-  const map: Record<string, string> = { TOP_UP: '充值', CONSUME: '消费', REFUND: '退款', ADJUST: '调整' }
+  const map: Record<string, string> = {
+    TOP_UP: '充值', CONSUME: '消费', REFUND: '退款',
+    ADJUST: '调整', PAYMENT_REFUND: '支付退款',
+  }
   return map[t] || t
 }
 function typeBadgeClass(t: string) {
   const map: Record<string, string> = {
-    TOP_UP: 'badge-green', CONSUME: 'badge-red', REFUND: 'badge-blue', ADJUST: 'badge-gold',
+    TOP_UP: 'badge-green', CONSUME: 'badge-red', REFUND: 'badge-blue',
+    ADJUST: 'badge-gold', PAYMENT_REFUND: 'badge-red',
   }
   return map[t] || ''
 }

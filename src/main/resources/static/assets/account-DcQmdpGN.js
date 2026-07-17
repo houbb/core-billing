@@ -1,0 +1,1 @@
+import{h as a}from"./http-CfMCi7tm.js";const n={create(t,c){return a.post("/accounts",{name:t,type:c})},get(t){return a.get(`/accounts/${t}`)},getBalance(t){return a.get(`/accounts/${t}/balance`)},listAdmin(t=1,c=20){return a.get("/admin/accounts",{params:{page:t,size:c}})}};export{n as a};

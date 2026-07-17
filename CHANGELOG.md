@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [1.0.0] - 2026-07-17
+
+### Phase 1-9：Enterprise Billing Platform
+
+- P1：多余额投影、冻结/确认/释放、乐观并发控制。
+- P2：资源、价格规则、价格版本、固定/单位/阶梯计价与费用解释。
+- P3：Usage Event 幂等接入、计量器、可计费记录、每日聚合与余额联动。
+- P4：额度定义、分配、两阶段预留、BLOCK/OVERAGE/DEGRADE 策略与告警。
+- P5：Product、Free/Pro/Enterprise 套餐、版本、试用、升级降级与生命周期。
+- P6：Payment Driver SPI、可验签 MOCK 渠道、订单、回调、退款、对账和审计。
+- P7：Invoice、Item、Statement、Settlement、Credit Note、税率、PDF/Excel 导出。
+- P8：Revenue、Cost、Profit、MRR/ARR、客户/产品分析与线性 Forecast。
+- P9：合同、多组织、多币种、营销、Marketplace、Partner、预算、成本中心、审批、分账与 Payout。
+- 新增 `/account/billing` 用户商业中心和 `/admin/platform/p1` 至 `/admin/platform/p9` 管理控制台。
+- 新增 Flyway V2 迁移、JUnit5 规则测试与 P1-P9 HTTP 端到端测试。
+
 ## [0.1.0] - 2026-07-17
 
 ### Phase 0：Billing Foundation — 统一商业账本基础设施

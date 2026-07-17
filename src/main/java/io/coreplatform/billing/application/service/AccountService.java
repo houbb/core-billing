@@ -4,6 +4,7 @@ import io.coreplatform.billing.application.command.CreateAccountCommand;
 import io.coreplatform.billing.application.domain.Account;
 import io.coreplatform.billing.application.domain.AccountType;
 import io.coreplatform.billing.application.exception.AccountNotFoundException;
+import io.coreplatform.billing.application.exception.BillingBusinessException;
 import io.coreplatform.billing.application.port.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,15 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 
+    public Account getAuthorizedAccount(Long accountId, String tenantId, boolean superAdmin) {
+        Account account = getAccount(accountId);
+        if (!superAdmin && !account.getTenantId().equals(tenantId)) {
+            throw BillingBusinessException.forbidden(
+                    "BILLING_ACCOUNT_TENANT_FORBIDDEN", "无权访问其他租户账户");
+        }
+        return account;
+    }
+
     public List<Account> listAccounts(int page, int size, String tenantId) {
         if (tenantId != null && !tenantId.isEmpty()) {
             return accountRepository.findByTenant(tenantId, page, size);
@@ -56,7 +66,9 @@ public class AccountService {
         return accountRepository.findAll(page, size);
     }
 
-    public int countAccounts() {
-        return accountRepository.count();
+    public int countAccounts(String tenantId) {
+        return tenantId == null || tenantId.isBlank()
+                ? accountRepository.count()
+                : accountRepository.countByTenant(tenantId);
     }
 }

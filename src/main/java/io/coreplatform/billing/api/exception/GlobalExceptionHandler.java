@@ -1,6 +1,7 @@
 package io.coreplatform.billing.api.exception;
 
 import io.coreplatform.billing.application.exception.AccountNotFoundException;
+import io.coreplatform.billing.application.exception.BillingBusinessException;
 import io.coreplatform.billing.application.exception.DuplicateTransactionException;
 import io.coreplatform.billing.application.exception.InsufficientPermissionException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +35,18 @@ public class GlobalExceptionHandler {
                                                                 HttpServletRequest request) {
         return errorResponse(HttpStatus.FORBIDDEN, ErrorCode.FORBIDDEN.getCode(),
                 ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(BillingBusinessException.class)
+    public ResponseEntity<Map<String, Object>> handleBusiness(BillingBusinessException ex,
+                                                               HttpServletRequest request) {
+        HttpStatus status = switch (ex.getKind()) {
+            case NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CONFLICT -> HttpStatus.CONFLICT;
+            case UNPROCESSABLE -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case FORBIDDEN -> HttpStatus.FORBIDDEN;
+        };
+        return errorResponse(status, ex.getErrorCode(), ex.getMessage(), request);
     }
 
     @ExceptionHandler(DuplicateTransactionException.class)

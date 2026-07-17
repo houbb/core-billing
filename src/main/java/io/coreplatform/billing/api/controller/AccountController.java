@@ -51,7 +51,8 @@ public class AccountController {
     @GetMapping("/{id}")
     @RequireRole({"USER", "ADMIN", "SUPER_ADMIN"})
     public ResponseEntity<Map<String, Object>> get(@PathVariable Long id) {
-        Account account = accountService.getAccount(id);
+        Account account = accountService.getAuthorizedAccount(
+                id, SecurityContext.getTenantId(), SecurityContext.isSuperAdmin());
 
         Map<String, Object> result = toAccountMap(account);
         return ResponseEntity.ok(result);
@@ -63,11 +64,16 @@ public class AccountController {
     @GetMapping("/{id}/balance")
     @RequireRole({"USER", "ADMIN", "SUPER_ADMIN"})
     public ResponseEntity<Map<String, Object>> getBalance(@PathVariable Long id) {
+        accountService.getAuthorizedAccount(
+                id, SecurityContext.getTenantId(), SecurityContext.isSuperAdmin());
         Map<String, Object> balance = balanceService.getBalance(id);
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("accountId", id);
         result.put("balance", balance.get("balance"));
+        result.put("available", balance.get("available"));
+        result.put("frozen", balance.get("frozen"));
+        result.put("total", balance.get("total"));
         result.put("currency", balance.get("currency"));
         return ResponseEntity.ok(result);
     }

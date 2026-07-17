@@ -5,6 +5,8 @@
         <span class="logo">Core Platform</span>
         <nav class="nav-links">
           <router-link to="/account">费用中心</router-link>
+          <router-link to="/account/billing">商业中心</router-link>
+          <router-link to="/admin/platform/p1">管理后台</router-link>
         </nav>
       </div>
     </header>
@@ -29,7 +31,6 @@
 }
 .header-inner {
   width: 100%;
-  max-width: 800px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -39,5 +40,5 @@
 .nav-links { display: flex; gap: 20px; }
 .nav-links a { font-size: 13px; color: var(--text-secondary); }
 .nav-links a.router-link-active { color: var(--accent); }
-.user-main { max-width: 800px; margin: 24px auto; padding: 0 16px; }
+.user-main { width: 100%; margin: 24px auto; padding: 0 24px; }
 </style>

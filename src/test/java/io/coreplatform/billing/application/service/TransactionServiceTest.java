@@ -9,6 +9,7 @@ import io.coreplatform.billing.application.domain.Transaction;
 import io.coreplatform.billing.application.domain.TransactionType;
 import io.coreplatform.billing.application.exception.AccountNotFoundException;
 import io.coreplatform.billing.application.port.AccountRepository;
+import io.coreplatform.billing.application.port.BillingRuntimeStore;
 import io.coreplatform.billing.application.port.OperationLogRepository;
 import io.coreplatform.billing.application.port.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,11 +40,19 @@ class TransactionServiceTest {
     @Mock
     private OperationLogRepository operationLogRepository;
 
+    @Mock
+    private BillingRuntimeStore runtimeStore;
+
     private TransactionService transactionService;
 
     @BeforeEach
     void setUp() {
-        transactionService = new TransactionService(transactionRepository, accountRepository, operationLogRepository);
+        transactionService = new TransactionService(
+                transactionRepository, accountRepository, operationLogRepository, runtimeStore);
+        when(runtimeStore.ensureBalance(anyLong(), anyString(), anyString(), anyString()))
+                .thenReturn(java.util.Map.of("amount", BigDecimal.ZERO));
+        when(runtimeStore.mutateBalance(anyLong(), anyString(), anyString(),
+                any(BigDecimal.class), any(BigDecimal.class), anyString())).thenReturn(true);
     }
 
     @Test

@@ -76,12 +76,10 @@ function badgeClass(t: string) {
   return map[t] || ''
 }
 
-// 通过查询 accountId=1 的交易列表作为全局流水视图
-// 实际应该有一个全局的流水查询接口，这里简化处理
 async function load() {
   loading.value = true
   try {
-    const res = await transactionApi.listByAccount(1, page.value, 30)
+    const res = await transactionApi.listAdmin(page.value, 30)
     transactions.value = res.data.items
     total.value = res.data.total
     hasMore.value = res.data.hasNext
@@ -92,7 +90,7 @@ async function loadMore() {
   loadingMore.value = true
   page.value++
   try {
-    const res = await transactionApi.listByAccount(1, page.value, 30)
+    const res = await transactionApi.listAdmin(page.value, 30)
     transactions.value.push(...res.data.items)
     total.value = res.data.total
     hasMore.value = res.data.hasNext

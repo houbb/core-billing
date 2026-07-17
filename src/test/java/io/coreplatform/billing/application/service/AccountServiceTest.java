@@ -102,4 +102,11 @@ class AccountServiceTest {
         assertThrows(AccountNotFoundException.class,
                 () -> accountService.getAccount(999L));
     }
+
+    @Test
+    void shouldCountTenantAccounts() {
+        when(accountRepository.countByTenant("tenant1")).thenReturn(3);
+
+        assertEquals(3, accountService.countAccounts("tenant1"));
+    }
 }

@@ -6,6 +6,7 @@ import io.coreplatform.billing.api.security.RequireRole;
 import io.coreplatform.billing.api.security.SecurityContext;
 import io.coreplatform.billing.application.domain.Transaction;
 import io.coreplatform.billing.application.service.TransactionService;
+import io.coreplatform.billing.application.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,12 @@ import java.util.Map;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final AccountService accountService;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService,
+                                 AccountService accountService) {
         this.transactionService = transactionService;
+        this.accountService = accountService;
     }
 
     /**
@@ -31,6 +35,8 @@ public class TransactionController {
     @PostMapping
     @RequireRole({"USER", "ADMIN", "SUPER_ADMIN"})
     public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody RecordTransactionCommand command) {
+        accountService.getAuthorizedAccount(
+                command.getAccountId(), SecurityContext.getTenantId(), SecurityContext.isSuperAdmin());
         Transaction tx = transactionService.recordTransaction(command, SecurityContext.getUserId());
 
         Map<String, Object> result = new LinkedHashMap<>();
@@ -50,6 +56,8 @@ public class TransactionController {
     @RequireRole({"USER", "ADMIN", "SUPER_ADMIN"})
     public ResponseEntity<Map<String, Object>> get(@PathVariable Long id) {
         Transaction tx = transactionService.getTransaction(id);
+        accountService.getAuthorizedAccount(
+                tx.getAccountId(), SecurityContext.getTenantId(), SecurityContext.isSuperAdmin());
         return ResponseEntity.ok(toTransactionMap(tx));
     }
 
@@ -63,6 +71,8 @@ public class TransactionController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
 
+        accountService.getAuthorizedAccount(
+                accountId, SecurityContext.getTenantId(), SecurityContext.isSuperAdmin());
         List<Transaction> transactions = transactionService.listTransactions(accountId, page, size);
         int total = transactionService.countTransactions(accountId);
 
@@ -80,6 +90,8 @@ public class TransactionController {
     @RequireRole({"USER", "ADMIN", "SUPER_ADMIN"})
     public ResponseEntity<Map<String, Object>> getByNo(@PathVariable String transactionNo) {
         Transaction tx = transactionService.getTransactionByNo(transactionNo);
+        accountService.getAuthorizedAccount(
+                tx.getAccountId(), SecurityContext.getTenantId(), SecurityContext.isSuperAdmin());
         return ResponseEntity.ok(toTransactionMap(tx));
     }
 

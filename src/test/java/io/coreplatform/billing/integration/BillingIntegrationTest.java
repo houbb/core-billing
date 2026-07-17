@@ -82,8 +82,10 @@ class BillingIntegrationTest {
     @Test
     @Order(3)
     void step3_checkBalance() {
-        var resp = restTemplate.getForEntity(
+        var resp = restTemplate.exchange(
                 baseUrl() + "/accounts/" + accountId + "/balance",
+                HttpMethod.GET,
+                new HttpEntity<>(headers()),
                 Map.class);
 
         assertEquals(HttpStatus.OK, resp.getStatusCode());
@@ -112,8 +114,10 @@ class BillingIntegrationTest {
     @Test
     @Order(5)
     void step5_checkBalanceAfterConsume() {
-        var resp = restTemplate.getForEntity(
+        var resp = restTemplate.exchange(
                 baseUrl() + "/accounts/" + accountId + "/balance",
+                HttpMethod.GET,
+                new HttpEntity<>(headers()),
                 Map.class);
 
         assertEquals(0, new BigDecimal("95.00").compareTo(toBigDecimal(resp.getBody().get("balance"))));
@@ -141,8 +145,10 @@ class BillingIntegrationTest {
     @Test
     @Order(7)
     void step7_checkBalanceAfterRefund() {
-        var resp = restTemplate.getForEntity(
+        var resp = restTemplate.exchange(
                 baseUrl() + "/accounts/" + accountId + "/balance",
+                HttpMethod.GET,
+                new HttpEntity<>(headers()),
                 Map.class);
 
         assertEquals(0, new BigDecimal("100.00").compareTo(toBigDecimal(resp.getBody().get("balance"))));
@@ -185,8 +191,10 @@ class BillingIntegrationTest {
     @Test
     @Order(10)
     void step10_finalBalance() {
-        var resp = restTemplate.getForEntity(
+        var resp = restTemplate.exchange(
                 baseUrl() + "/accounts/" + accountId + "/balance",
+                HttpMethod.GET,
+                new HttpEntity<>(headers()),
                 Map.class);
 
         // 100 + 50 = 150

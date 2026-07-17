@@ -15,7 +15,15 @@ public interface TransactionRepository {
 
     List<Transaction> findByAccountId(Long accountId, int page, int size);
 
+    List<Transaction> findAll(int page, int size);
+
+    List<Transaction> findByTenant(String tenantId, int page, int size);
+
     int countByAccountId(Long accountId);
+
+    int count();
+
+    int countByTenant(String tenantId);
 
     Transaction save(Transaction transaction);
 }

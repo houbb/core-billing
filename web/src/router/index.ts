@@ -7,6 +7,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/layouts/UserLayout.vue'),
     children: [
       { path: '', component: () => import('@/pages/account/MyAccount.vue') },
+      { path: 'billing', component: () => import('@/pages/account/BillingCenter.vue') },
     ],
   },
   {
@@ -16,6 +17,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'accounts', component: () => import('@/pages/admin/AccountList.vue') },
       { path: 'accounts/:id', component: () => import('@/pages/admin/AccountDetail.vue') },
       { path: 'transactions', component: () => import('@/pages/admin/TransactionList.vue') },
+      { path: 'platform/:phase?', component: () => import('@/pages/admin/PlatformConsole.vue') },
     ],
   },
   { path: '/:pathMatch(.*)*', redirect: '/account' },

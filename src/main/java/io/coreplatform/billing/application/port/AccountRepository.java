@@ -15,5 +15,7 @@ public interface AccountRepository {
 
     int count();
 
+    int countByTenant(String tenantId);
+
     Account save(Account account);
 }

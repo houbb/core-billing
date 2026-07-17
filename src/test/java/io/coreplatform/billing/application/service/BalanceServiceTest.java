@@ -5,12 +5,12 @@ import io.coreplatform.billing.application.domain.AccountStatus;
 import io.coreplatform.billing.application.domain.AccountType;
 import io.coreplatform.billing.application.exception.AccountNotFoundException;
 import io.coreplatform.billing.application.port.AccountRepository;
+import io.coreplatform.billing.application.port.BillingRuntimeStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class BalanceServiceTest {
 
     @Mock
-    private JdbcTemplate jdbc;
+    private BillingRuntimeStore runtimeStore;
 
     @Mock
     private AccountRepository accountRepository;
@@ -34,7 +34,7 @@ class BalanceServiceTest {
 
     @BeforeEach
     void setUp() {
-        balanceService = new BalanceService(jdbc, accountRepository);
+        balanceService = new BalanceService(runtimeStore, accountRepository);
     }
 
     @Test
@@ -42,21 +42,17 @@ class BalanceServiceTest {
         Account account = activeAccount(1L);
 
         when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
-        when(jdbc.queryForObject(
-                eq("SELECT COALESCE(SUM(amount), 0) FROM billing_transaction WHERE account_id = ? AND direction = 'IN'"),
-                eq(BigDecimal.class), eq(1L)))
-                .thenReturn(new BigDecimal("200.00"));
-        when(jdbc.queryForObject(
-                eq("SELECT COALESCE(SUM(amount), 0) FROM billing_transaction WHERE account_id = ? AND direction = 'OUT'"),
-                eq(BigDecimal.class), eq(1L)))
-                .thenReturn(new BigDecimal("50.00"));
+        when(runtimeStore.ensureBalance(1L, "CASH", "CNY", "system"))
+                .thenReturn(Map.of(
+                        "amount", new BigDecimal("150.00"),
+                        "frozen_amount", new BigDecimal("10.00")));
 
         Map<String, Object> result = balanceService.getBalance(1L);
 
         assertEquals(new BigDecimal("150.00"), result.get("balance"));
         assertEquals("CNY", result.get("currency"));
-        assertEquals(new BigDecimal("200.00"), result.get("totalIn"));
-        assertEquals(new BigDecimal("50.00"), result.get("totalOut"));
+        assertEquals(new BigDecimal("10.00"), result.get("frozen"));
+        assertEquals(new BigDecimal("160.00"), result.get("total"));
     }
 
     @Test
@@ -64,8 +60,8 @@ class BalanceServiceTest {
         Account account = activeAccount(1L);
 
         when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
-        when(jdbc.queryForObject(any(String.class), eq(BigDecimal.class), eq(1L)))
-                .thenReturn(BigDecimal.ZERO);
+        when(runtimeStore.ensureBalance(1L, "CASH", "CNY", "system"))
+                .thenReturn(Map.of("amount", BigDecimal.ZERO, "frozen_amount", BigDecimal.ZERO));
 
         Map<String, Object> result = balanceService.getBalance(1L);
 
@@ -85,14 +81,10 @@ class BalanceServiceTest {
         Account account = activeAccount(1L);
 
         when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
-        when(jdbc.queryForObject(
-                eq("SELECT COALESCE(SUM(amount), 0) FROM billing_transaction WHERE account_id = ? AND direction = 'IN'"),
-                eq(BigDecimal.class), eq(1L)))
-                .thenReturn(new BigDecimal("50.00"));
-        when(jdbc.queryForObject(
-                eq("SELECT COALESCE(SUM(amount), 0) FROM billing_transaction WHERE account_id = ? AND direction = 'OUT'"),
-                eq(BigDecimal.class), eq(1L)))
-                .thenReturn(new BigDecimal("150.00"));
+        when(runtimeStore.ensureBalance(1L, "CASH", "CNY", "system"))
+                .thenReturn(Map.of(
+                        "amount", new BigDecimal("-100.00"),
+                        "frozen_amount", BigDecimal.ZERO));
 
         Map<String, Object> result = balanceService.getBalance(1L);
 

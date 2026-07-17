@@ -40,6 +40,11 @@ export const transactionApi = {
   get(id: number) {
     return http.get<Transaction>(`/transactions/${id}`)
   },
+  listAdmin(page = 1, size = 50) {
+    return http.get<PagedResponse<Transaction>>('/admin/transactions', {
+      params: { page, size },
+    })
+  },
   adjustBalance(accountId: number, amount: number, reason: string) {
     return http.post(`/admin/accounts/${accountId}/adjust`, { amount, reason })
   },

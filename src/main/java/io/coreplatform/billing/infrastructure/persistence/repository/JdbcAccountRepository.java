@@ -59,6 +59,14 @@ public class JdbcAccountRepository implements AccountRepository {
     }
 
     @Override
+    public int countByTenant(String tenantId) {
+        Integer result = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM billing_account WHERE tenant_id = ?",
+                Integer.class, tenantId);
+        return result != null ? result : 0;
+    }
+
+    @Override
     public Account save(Account account) {
         if (account.getId() == null) {
             return insert(account);

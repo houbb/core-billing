@@ -129,3 +129,59 @@ a { color: var(--accent); text-decoration: none; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
 .gap-2 { gap: 8px; }
 .gap-4 { gap: 16px; }
+
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.metric-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.metric-card span, .metric-card small { font-size: 11px; color: var(--text-secondary); }
+.metric-card strong { font-size: 24px; font-weight: 600; }
+
+.phase-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.phase-tab {
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.phase-tab.active,
+.phase-tab.router-link-active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+@media (max-width: 720px) {
+  .admin-layout { display: block; }
+  .sidebar { width: 100%; }
+  .admin-main, .user-main { padding: 12px; }
+  .page-grid { grid-template-columns: 1fr; }
+  .table th, .table td { padding: 8px; }
+}

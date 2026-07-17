@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:sqlite:./target/test-core-billing.db
+    url: jdbc:sqlite:./target/test-core-billing-${random.uuid}.db
     driver-class-name: org.sqlite.JDBC
   flyway:
     enabled: true

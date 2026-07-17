@@ -4,5 +4,6 @@ public enum TransactionType {
     TOP_UP,
     CONSUME,
     REFUND,
-    ADJUST
+    ADJUST,
+    PAYMENT_REFUND
 }

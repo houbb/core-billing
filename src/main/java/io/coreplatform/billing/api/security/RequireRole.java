@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 角色权限注解
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface RequireRole {

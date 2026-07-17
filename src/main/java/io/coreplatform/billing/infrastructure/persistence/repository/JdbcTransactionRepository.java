@@ -60,9 +60,45 @@ public class JdbcTransactionRepository implements TransactionRepository {
     }
 
     @Override
+    public List<Transaction> findAll(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT id, account_id, transaction_no, transaction_type, amount, direction, " +
+                "reference_type, reference_id, description, create_time, create_user " +
+                "FROM billing_transaction ORDER BY create_time DESC LIMIT ? OFFSET ?";
+        return jdbc.query(sql, TransactionRowMapper.INSTANCE, size, offset);
+    }
+
+    @Override
+    public List<Transaction> findByTenant(String tenantId, int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT t.id, t.account_id, t.transaction_no, t.transaction_type, " +
+                "t.amount, t.direction, t.reference_type, t.reference_id, t.description, " +
+                "t.create_time, t.create_user FROM billing_transaction t " +
+                "JOIN billing_account a ON a.id = t.account_id WHERE a.tenant_id = ? " +
+                "ORDER BY t.create_time DESC LIMIT ? OFFSET ?";
+        return jdbc.query(sql, TransactionRowMapper.INSTANCE, tenantId, size, offset);
+    }
+
+    @Override
     public int countByAccountId(Long accountId) {
         String sql = "SELECT COUNT(*) FROM billing_transaction WHERE account_id = ?";
         Integer result = jdbc.queryForObject(sql, Integer.class, accountId);
+        return result != null ? result : 0;
+    }
+
+    @Override
+    public int count() {
+        Integer result = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM billing_transaction", Integer.class);
+        return result != null ? result : 0;
+    }
+
+    @Override
+    public int countByTenant(String tenantId) {
+        Integer result = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM billing_transaction t " +
+                        "JOIN billing_account a ON a.id = t.account_id WHERE a.tenant_id = ?",
+                Integer.class, tenantId);
         return result != null ? result : 0;
     }
 

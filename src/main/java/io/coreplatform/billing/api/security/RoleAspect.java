@@ -19,10 +19,14 @@ public class RoleAspect {
 
     private static final Logger log = LoggerFactory.getLogger(RoleAspect.class);
 
-    @Around("@annotation(io.coreplatform.billing.api.security.RequireRole)")
+    @Around("@annotation(io.coreplatform.billing.api.security.RequireRole) || " +
+            "@within(io.coreplatform.billing.api.security.RequireRole)")
     public Object checkRole(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         RequireRole requireRole = signature.getMethod().getAnnotation(RequireRole.class);
+        if (requireRole == null) {
+            requireRole = joinPoint.getTarget().getClass().getAnnotation(RequireRole.class);
+        }
 
         String currentRole = SecurityContext.getRole();
         List<String> allowedRoles = Arrays.asList(requireRole.value());

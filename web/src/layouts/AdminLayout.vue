@@ -5,6 +5,7 @@
       <nav class="sidebar-nav">
         <router-link to="/admin/accounts">账户管理</router-link>
         <router-link to="/admin/transactions">交易流水</router-link>
+        <router-link to="/admin/platform/p1">P1-P9 商业平台</router-link>
         <router-link to="/account">← 返回用户端</router-link>
       </nav>
     </aside>
@@ -47,6 +48,7 @@
 }
 .admin-main {
   flex: 1;
+  width: 100%;
   padding: 24px 32px;
   overflow-y: auto;
 }

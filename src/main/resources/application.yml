@@ -26,3 +26,14 @@ management:
   endpoint:
     health:
       show-details: always
+
+core:
+  billing:
+    default-currency: CNY
+    payment-callback-secret: ${BILLING_PAYMENT_CALLBACK_SECRET:local-billing-callback-secret}
+    metering:
+      aggregate-cron: ${BILLING_METERING_AGGREGATE_CRON:0 10 0 * * *}
+    invoice:
+      generate-cron: ${BILLING_INVOICE_GENERATE_CRON:0 30 1 1 * *}
+    finance:
+      snapshot-cron: ${BILLING_FINANCE_SNAPSHOT_CRON:0 20 2 * * *}
