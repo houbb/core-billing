@@ -4,6 +4,22 @@
 
 ---
 
+## 项目结构
+
+```
+core-billing/
+├── core-billing-backend/     # Spring Boot 后端（pom.xml、src/）
+├── core-billing-frontend/    # Vue 3 前端（package.json、vite.config.ts）
+├── design-docs/ / docs / ... # 文档
+└── .gitignore / AGENTS.md / ...
+```
+
+- 后端代码在 `core-billing-backend/` 下，Maven 命令在此目录执行
+- 前端代码在 `core-billing-frontend/` 下，npm 命令在此目录执行
+- 根目录只放全项目文档和配置文件，不放 pom.xml
+
+---
+
 # 沟通规范 ⚠️ 强制遵守
 
 **需要你向我提问时，必须使用选项列表，禁止用散文/段落罗列问题。**
@@ -60,7 +76,7 @@
 
 ## 强制触发规则 (Hard Trigger)
 
-**当用户提出以下任一类型的任务时，你必须立即调用 `unknowns-discovery` Skill（通过 Skill 工具），然后才能开始实现：**
+**当用户提出以下任一类型的任务时，你必须先执行 Unknowns Discovery 流程，然后才能开始实现：**
 
 - 新功能开发 / 新模块创建
 - 架构设计 / 数据模型设计
@@ -71,7 +87,12 @@
 - 不可逆操作（如数据库迁移、删除数据）
 - 用户需求中有主观描述词（"简单""好看""智能""自然"）
 
-**这是硬性要求，不是建议。调用方式：`Skill("unknowns-discovery", "standard")`**
+**这是硬性要求，不是建议。**
+
+**执行方式（按优先级尝试）：**
+
+1. **优先** — 调用 Skill 工具：`Skill("unknowns-discovery", "standard")`
+2. **Fallback** — 如果 Skill 不可用（返回 "Unknown skill"），则手动执行 `.agents/skills/unknowns-discovery/SKILL.md` 中定义的完整流程，产出 Unknowns Report（模板在 `templates/unknowns-report.md`）。将报告内容直接输出给用户确认，确认后再进入实现。
 
 **只有以下情况可以跳过：**
 - 单行修复（typo、注释修正）
@@ -114,3 +135,15 @@ For substantial features, architecture changes, ambiguous product work, migratio
 2）尽可能的端到端测试验证，保障整体功能正确性
 
 3）简明扼要的使用+变更内容
+
+# 文档更新
+
+## 变更日志
+
+每一次功能全部完成后，将变更压缩更新到 CHANGELOG.md 中，版本号主动询问一下用户
+
+## README
+
+README.md 也进行同步的更新，保持文档最新
+
+要面向用户去写，保留启动方式（方便快速体验）。

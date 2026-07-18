@@ -19,7 +19,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../src/main/resources/static',
+    outDir: '../core-billing-backend/src/main/resources/static',
     emptyOutDir: true,
   },
 })

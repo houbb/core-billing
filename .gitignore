@@ -95,6 +95,7 @@ coverage/
 
 # Data
 data/
+core-billing-backend/data/
 *.db
 
 # Distribution

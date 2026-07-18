@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [1.1.0] - 2026-07-18
+
+### 工程优化：前后端分离目录结构
+
+- `pom.xml` + `src/` + `data/` → 移至 `core-billing-backend/`
+- `web/` → 重命名为 `core-billing-frontend/`
+- `vite.config.ts` 中 `outDir` 更新为 `../core-billing-backend/src/main/resources/static`
+- `.gitignore` 新增 `core-billing-backend/data/` 规则
+- `AGENTS.md` 更新为最终文件夹名称
+- Maven 命令在 `core-billing-backend/` 下执行，npm 命令在 `core-billing-frontend/` 下执行
+
 ## [1.0.0] - 2026-07-17
 
 ### Phase 1-9：Enterprise Billing Platform
